@@ -351,7 +351,18 @@ export class MsSqlQuery extends AbstractQuery {
       });
     }
 
-    match = err.message.match(/Could not drop constraint. See previous errors./);
+    match = err.errors[1].message.match(/Could not create constraint or index. See previous errors./);
+    if (match && match.length > 0) {
+      return new sequelizeErrors.ForeignKeyConstraintError({
+        fields: null,
+        index: match[1],
+        cause: err.errors[1],
+        stack: errStack,
+      });
+    }
+
+    match = err.message.match(/Could not drop constraint. See previous errors./)
+      || err.errors[1].message.match(/Could not drop constraint. See previous errors./);
     if (match && match.length > 0) {
       let constraint = err.sql.match(/(?:constraint|index) \[(.+?)]/i);
       constraint = constraint ? constraint[1] : undefined;
