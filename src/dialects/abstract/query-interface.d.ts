@@ -665,7 +665,7 @@ export class QueryInterface {
   createDatabase(name: string, options?: CreateDatabaseOptions): Promise<void>;
 
   /**
-   * Creates a database
+   * Drops a database
    */
   dropDatabase(name: string, options?: QueryRawOptions): Promise<void>;
 }
